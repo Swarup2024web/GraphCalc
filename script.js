@@ -1,5 +1,14 @@
 let chart = null;
 let animationInterval = null;
+let animationPaused = false;
+let currentIndex = 0;
+let xFull = [];
+let yFull = [];
+
+function getRandomColor() {
+  const colors = ['#ff4dc4', '#00ffc8', '#ffa500', '#00ff88', '#ff0066', '#66ff66'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
 function plot() {
   const expr = document.getElementById('equation').value;
@@ -12,18 +21,20 @@ function plot() {
     return;
   }
 
-  // Stop previous animation if running
+  // Clear previous animation if exists
   if (animationInterval) {
     clearInterval(animationInterval);
     animationInterval = null;
   }
 
-  const xFull = [];
-  const yFull = [];
+  currentIndex = 0;
+  animationPaused = false;
+  xFull = [];
+  yFull = [];
 
   for (let x = xStart; x <= xEnd; x += step) {
     try {
-      const y = math.evaluate(expr, { x: x });
+      const y = math.evaluate(expr, { x });
       xFull.push(x);
       yFull.push(y);
     } catch (err) {
@@ -35,7 +46,6 @@ function plot() {
   const ctx = document.getElementById('graphCanvas').getContext('2d');
   if (chart) chart.destroy();
 
-  // Start with empty dataset
   chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -43,8 +53,8 @@ function plot() {
       datasets: [{
         label: `y = ${expr}`,
         data: [],
-        borderColor: '#00ffc8',
-        backgroundColor: 'rgba(0, 255, 200, 0.1)',
+        borderColor: getRandomColor(),
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderWidth: 3,
         pointRadius: 0,
         tension: 0.3,
@@ -53,27 +63,53 @@ function plot() {
     },
     options: {
       responsive: true,
-      animation: false, // Turn off default animation
+      animation: false,
       scales: {
-        x: { title: { display: true, text: 'x' }, ticks: { color: '#fff' } },
-        y: { title: { display: true, text: 'y' }, ticks: { color: '#fff' } }
+        x: {
+          title: { display: true, text: 'x' },
+          ticks: { color: '#fff' }
+        },
+        y: {
+          title: { display: true, text: 'y' },
+          ticks: { color: '#fff' }
+        }
       },
       plugins: {
-        legend: { labels: { color: '#fff' } }
+        legend: {
+          labels: {
+            color: '#fff'
+          }
+        }
       }
     }
   });
 
-  // Animate the line like a snake 🐍
-  let i = 0;
+  startAnimation();
+}
+
+function startAnimation() {
+  const speed = parseInt(document.getElementById('speedSlider').value);
+  const delay = 110 - speed;
+
   animationInterval = setInterval(() => {
-    if (i >= xFull.length) {
-      clearInterval(animationInterval);
-      return;
+    if (!animationPaused && currentIndex < xFull.length) {
+      chart.data.labels.push(xFull[currentIndex]);
+      chart.data.datasets[0].data.push(yFull[currentIndex]);
+      chart.update();
+      currentIndex++;
     }
-    chart.data.labels.push(xFull[i]);
-    chart.data.datasets[0].data.push(yFull[i]);
-    chart.update();
-    i++;
-  }, 20); // Speed of animation (lower is faster)
+
+    if (currentIndex >= xFull.length) {
+      clearInterval(animationInterval);
+    }
+  }, delay);
+}
+
+function toggleAnimation() {
+  animationPaused = !animationPaused;
+
+  // If resumed after pause and interval was cleared, restart
+  if (!animationInterval && currentIndex < xFull.length) {
+    startAnimation();
+  }
 }
