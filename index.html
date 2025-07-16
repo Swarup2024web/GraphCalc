@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Equation Plotter</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Math.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Equation Plotter</h1>
+    <div class="input-group">
+      <label for="equation">Enter Equation (in terms of x):</label>
+      <input type="text" id="equation" placeholder="e.g. sin(x), x^2 + 3x, log(x)">
+    </div>
+    <div class="range-group">
+      <label>Range: </label>
+      <input type="number" id="xStart" placeholder="x start" value="-10">
+      <input type="number" id="xEnd" placeholder="x end" value="10">
+    </div>
+    <button onclick="plot()">📊 Plot</button>
+    <canvas id="graphCanvas"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
