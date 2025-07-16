@@ -4,38 +4,47 @@
   <meta charset="UTF-8">
   <title>Equation Plotter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- External Styles -->
   <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Math.js CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>GraphCalc</h1>
+    <h1>🎯 Equation Plotter</h1>
 
+    <!-- Equation Input -->
     <div class="input-group">
-      <label>Equation (in x):</label>
-      <input type="text" id="equation" placeholder="e.g. sin(x), x^2, log(x)" />
+      <label for="equation">Equation (in x):</label>
+      <input type="text" id="equation" placeholder="e.g. sin(x), x^2 + 3x, log(x)" />
     </div>
 
+    <!-- Range Selection -->
     <div class="range-group">
       <label>Range:</label>
       <input type="number" id="xStart" placeholder="Start X" value="-10" />
       <input type="number" id="xEnd" placeholder="End X" value="10" />
     </div>
 
+    <!-- Speed Slider -->
     <div class="control-group">
       <label for="speedSlider">Speed:</label>
       <input type="range" id="speedSlider" min="1" max="100" value="20" />
     </div>
 
+    <!-- Control Buttons -->
     <div class="button-group">
       <button onclick="plot()">📊 Plot</button>
       <button onclick="toggleAnimation()">⏯️ Pause/Resume</button>
     </div>
 
+    <!-- Graph Area -->
     <canvas id="graphCanvas"></canvas>
   </div>
 
+  <!-- Your Script -->
   <script src="script.js"></script>
 </body>
 </html>
